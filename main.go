@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"playgroundgo/proc"
 	"strings"
 	"time"
 )
@@ -34,6 +36,36 @@ func main() {
 		fmt.Println("Error parsing JSON:", err)
 		return
 	}
+
+	pid := os.Getpid()
+	fmt.Println("Process ID:", pid)
+
+	exePath, err := os.Executable()
+	if err != nil {
+		fmt.Println("Error getting executable path:", err)
+		return
+	}
+	exeName := filepath.Base(exePath)
+	fmt.Println("Executable name:", exeName)
+
+	dirs, err := proc.GetProcDirs()
+	if err != nil {
+		fmt.Println("Error getting proc directories:", err)
+		return
+	}
+	fmt.Print("Proc directories: ")
+	fmt.Println(dirs)
+
+	files, err := proc.GetOpenFiles(26594)
+	if err != nil {
+		fmt.Println("Error getting open files:", err)
+		return
+	}
+	fmt.Println("Open files:")
+	for _, file := range files {
+		fmt.Println(file)
+	}
+
 	var result []Account
 	keyword := "AR"
 	for _, account := range accounts {
